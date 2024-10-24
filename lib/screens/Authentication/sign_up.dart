@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messaging_app/services/auth_services.dart';
 import 'package:messaging_app/shared/styled_button.dart';
 import 'package:messaging_app/shared/theme.dart';
 
@@ -15,6 +16,8 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   bool _showPassword = false;
+  bool _isLoading = false;
+  String? _error;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,9 +71,29 @@ class _SignUpState extends State<SignUp> {
             
             const SizedBox(height: 16,),
 
-            StyledButton(onPressed: (){
+            if(_error != null)
+              Text(_error!, style: const TextStyle(color: Colors.red),),
 
-            }, text: "Sign up")
+            _isLoading ? const CircularProgressIndicator() :
+            ElevatedButton(onPressed: ()async{
+              setState(() {
+                _isLoading = true;
+              });
+              final name = _nameController.text.toLowerCase().trim();
+              final email = _emailController.text.toLowerCase().trim();
+              final password = _passwordController.text.trim();
+
+              final user = await AuthServices.signUp(email, password);
+
+              if(user == null){
+                setState(() {
+                  _error = "Email already existed";
+                });
+              }
+              setState(() {
+                _isLoading = false;
+              });
+            }, child: const Text("Sign up"))
           ],
         )),
     );

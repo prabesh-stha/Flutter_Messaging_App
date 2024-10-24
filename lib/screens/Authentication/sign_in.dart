@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messaging_app/services/auth_services.dart';
 import 'package:messaging_app/shared/styled_button.dart';
 import 'package:messaging_app/shared/theme.dart';
 
@@ -14,6 +15,8 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _showPassword = false;
+  bool _isLoading = false;
+  String? _error;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,12 +53,28 @@ class _SignInState extends State<SignIn> {
                 }, icon: _showPassword ? const Icon(Icons.visibility_off_outlined) : const Icon(Icons.visibility_outlined))
               ),
             ),
-
+            if(_error != null)
+              Text(_error!, style: const TextStyle(color: Colors.red,)),
             const SizedBox(height: 16,),
+            _isLoading ? const CircularProgressIndicator() :
+            ElevatedButton(onPressed: ()async{
+              setState(() {
+                _isLoading = true;
+              });
+              final email = _emailController.text.trim();
+              final password = _passwordController.text.trim();
+              final user = await AuthServices.signIn(email, password);
+              if(user == null){
+                setState(() {
+                  _error = "Incorrect user information";
+                });
+              }
+              setState(() {
+                _passwordController.text = "";
+                _isLoading = false;
+              });
 
-            StyledButton(onPressed: (){
-
-            }, text: "Sign in")
+            }, child: const Text("Sign in"))
           ],
         ))
     );

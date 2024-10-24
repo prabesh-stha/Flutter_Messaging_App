@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:messaging_app/screens/Authentication/sign_in.dart';
 import 'package:messaging_app/screens/Authentication/sign_up.dart';
 import 'package:messaging_app/shared/styled_text.dart';
-import 'package:messaging_app/shared/theme.dart';
+
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
