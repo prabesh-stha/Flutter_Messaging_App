@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:messaging_app/shared/theme.dart';
 
+// ignore: must_be_immutable
 class StyledButton extends StatelessWidget {
 
   String text;

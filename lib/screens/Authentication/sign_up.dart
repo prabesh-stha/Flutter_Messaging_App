@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:messaging_app/models/user.dart';
 import 'package:messaging_app/services/auth_services.dart';
+import 'package:messaging_app/services/user_services.dart';
 import 'package:messaging_app/shared/styled_button.dart';
 import 'package:messaging_app/shared/theme.dart';
 
@@ -89,6 +91,8 @@ class _SignUpState extends State<SignUp> {
                 setState(() {
                   _error = "Email already existed";
                 });
+              }else{
+                await UserServices.createUser(User(uid: user.uid, name: name, email: user.email));
               }
               setState(() {
                 _isLoading = false;
