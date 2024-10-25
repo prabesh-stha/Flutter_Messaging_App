@@ -14,3 +14,12 @@ final userProvider = StreamProvider.autoDispose<User?>((ref){
     return Stream.value(null);
   }
 });
+
+final usersProvider = StreamProvider.autoDispose<List<User>>((ref){
+  return FirebaseFirestore.instance.collection("users").snapshots().map((snapshots){
+    return snapshots.docs.map((doc){
+      return User.fromFirestore(doc);
+    }).toList();
+    
+  });
+});
