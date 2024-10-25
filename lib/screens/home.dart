@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messaging_app/models/user.dart';
 import 'package:messaging_app/providers/user_provider.dart';
+import 'package:messaging_app/screens/chat_screen.dart';
 import 'package:messaging_app/services/auth_services.dart';
 import 'package:messaging_app/shared/styled_text.dart';
 
@@ -79,6 +80,7 @@ void showAllUserSheet(BuildContext context, WidgetRef ref, User currentUser) {
                       leading: const Icon(Icons.person_2_outlined),
                       title: StyledText(text: user.name),
                       subtitle: StyledText(text: user.email),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(senderId: currentUser.uid, participants: [currentUser.uid, user.uid], receiverUser: user))),
                     );
                   },
                 );
@@ -94,39 +96,29 @@ void showAllUserSheet(BuildContext context, WidgetRef ref, User currentUser) {
 }
 
 
-
-
-
-
-class SheetExample extends ConsumerStatefulWidget {
-  const SheetExample({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SheetExampleState();
-}
-
-class _SheetExampleState extends ConsumerState<SheetExample> {
+class Example extends StatelessWidget {
+  final User user;
+  const Example({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final usersAsyncValue = ref.watch(usersProvider);
     return Scaffold(
-      appBar: AppBar(),
-      body:  Padding(padding: const EdgeInsets.all(16),
-    child:
-      usersAsyncValue.when(data: (users){
-        return ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, index){
-            final user = users[index];
-            return ListTile(
-              leading: const Icon(Icons.person_2_outlined),
-              title: StyledText(text: user.name),
-              subtitle: StyledText(text: user.email),
-            );
-          });
-      }, error: (error, _) => const Text("Error loading users"), loading: () => const CircularProgressIndicator())
-    ),
+      appBar: AppBar(
+        title: Text(user.name),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name: ${user.name}', style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 8),
+            Text('Email: ${user.email}', style: const TextStyle(fontSize: 18)),
+            // Add more user details as needed
+          ],
+        ),
+      ),
     );
   }
 }

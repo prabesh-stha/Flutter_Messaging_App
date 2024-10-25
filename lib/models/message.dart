@@ -10,7 +10,7 @@ class Message {
 
   factory Message.fromFirestore(DocumentSnapshot doc){
     Map data = doc.data() as Map<String, dynamic>;
-    return Message(messageId: data['messageId'], senderId: data['senderId'], text: data['text'], sentTime: data['sentTime']);
+    return Message(messageId: doc.id, senderId: data['senderId'], text: data['text'], sentTime: (data['sentTime'] as Timestamp).toDate());
   }
 
 
