@@ -19,7 +19,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   String? chatId;
 
   Future<void> _initChat() async{
@@ -31,13 +31,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
 Future<void> _sendMessage() async {
   if (chatId == null || chatId!.isEmpty) {
-    // Create a new chat
     Chat chat = Chat(chatId: "", participants: widget.participants);
-    chatId = await ChatService.createChat(chat); // Wait for chat creation
-    setState(() {}); // Update the UI to reflect the new chatId
+    chatId = await ChatService.createChat(chat);
+    setState(() {});
   }
 
-  // Now, send the message using the chatId
   if (chatId != null && chatId!.isNotEmpty) {
     Message message = Message(
       messageId: "",
@@ -46,14 +44,13 @@ Future<void> _sendMessage() async {
       sentTime: DateTime.now(),
     );
     await ChatService.sendMessage(chatId!, message);
-    _textController.clear(); // Clear the text field after sending the message
+    _textController.clear(); 
   }
 }
 
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initChat();
   }
@@ -78,8 +75,8 @@ Future<void> _sendMessage() async {
                 reverse: true,
                 itemCount: messages.length,
                 itemBuilder: (context, index){
-                  final message = messages[index];
-                  return MessageBubbleScreen(senderId: widget.senderId, message: message);
+                  final Message message = messages[index];
+                  return MessageBubbleScreen(isSender: widget.senderId == message.senderId ? true : false, message: message);
                 });
               }, error: (error, _) => const StyledText(text: "Error loading message"), loading: () => const Center(child: CircularProgressIndicator(),));
             })

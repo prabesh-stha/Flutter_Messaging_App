@@ -14,4 +14,9 @@ class UserServices {
       'email' : user.email
     });
   }
+
+  static Future<DocumentSnapshot> getUser(String uid) async{
+  return await _firestore.collection("users").doc(uid).get();
 }
+}
+

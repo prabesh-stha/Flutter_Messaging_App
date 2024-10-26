@@ -33,6 +33,10 @@ static Future<String?> findChat(List<String> participants) async{
     }
   }
 
+  static Stream<QuerySnapshot> getChatLists(String userId){
+      return _firestore.collection("chats").where('participants', arrayContains: userId).snapshots();
+  }
+
  static  Future<void> sendMessage(String chatId, Message message) async{
         try{
           final DocumentReference messageReference = _firestore.collection("chats").doc(chatId).collection("message").doc();
@@ -54,5 +58,20 @@ static Future<String?> findChat(List<String> participants) async{
         return snapshot.docs.map((doc) => Message.fromFirestore(doc)).toList();
       });
 }
+
+static Future<void> deleteChat(String chatId) async {
+  final messagesCollection = _firestore.collection('chats').doc(chatId).collection('messages');
+
+  try {
+    final messagesSnapshot = await messagesCollection.get();
+    for (var doc in messagesSnapshot.docs) {
+      await messagesCollection.doc(doc.id).delete();
+    }
+    await _firestore.collection('chats').doc(chatId).delete();
+  } catch (e) {
+    print("Error deleting chat: $e");
+  }
+}
+
 
 }
