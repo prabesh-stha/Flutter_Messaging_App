@@ -10,7 +10,8 @@ import 'package:messaging_app/shared/capitalize_word.dart';
 import 'package:messaging_app/shared/styled_text.dart';
 
 class Home extends ConsumerStatefulWidget {
-  const Home({super.key});
+  User user;
+  Home({super.key, required this.user});
 
   @override
   ConsumerState<Home> createState() => _HomeState();
@@ -19,22 +20,23 @@ class Home extends ConsumerStatefulWidget {
 class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
+    // final user = ref.watch(userProvider);
     final chatAsyncValue = ref.watch(chatsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: user.when(
-          data: (userData) {
-            if(userData!= null){
-              // return Text('${userData.name[0].toUpperCase()}${userData.name.substring(1)}' );
-              return CapitalizeWord(text: userData.name, styleOfText: StyleOfText.title,);
-            }else{
-              return const Text("User");
-            }
-          },
-          loading: () => const Text('Loading...'),
-          error: (error, _) => const Text('Error'),
-        ),
+        // title: user.when(
+        //   data: (userData) {
+        //     if(userData!= null){
+        //       // return Text('${userData.name[0].toUpperCase()}${userData.name.substring(1)}' );
+        //       return CapitalizeWord(text: userData.name, styleOfText: StyleOfText.title,);
+        //     }else{
+        //       return const Text("User");
+        //     }
+        //   },
+        //   loading: () => const Text('Loading...'),
+        //   error: (error, _) => const Text('Error'),
+        // ),
+        title: CapitalizeWord(text: widget.user.name, styleOfText: StyleOfText.title),
         leading:
           IconButton(onPressed: (){
             AuthServices.signOut();
@@ -42,11 +44,12 @@ class _HomeState extends ConsumerState<Home> {
 
         actions: [
           IconButton(onPressed: (){
-            user.whenData((currentUser){
-              if(currentUser != null){
-                showAllUserSheet(context, ref, currentUser);
-              }
-            });
+            // user.whenData((currentUser){
+            //   if(currentUser != null){
+            //     showAllUserSheet(context, ref, currentUser);
+            //   }
+            // });
+            showAllUserSheet(context, ref, widget.user);
             
           }, icon: const Icon(Icons.add))
         ],

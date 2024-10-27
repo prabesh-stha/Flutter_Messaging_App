@@ -12,11 +12,12 @@ class StyledText extends StatelessWidget {
 
 class StyledHeading extends StatelessWidget {
   final String text;
-  const StyledHeading({super.key, required this.text});
+  final TextStyle? textStyle;
+  const StyledHeading({super.key, required this.text, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text.toUpperCase(), style: Theme.of(context).textTheme.headlineMedium);
+    return Text(text.toUpperCase(), style: textStyle ?? Theme.of(context).textTheme.headlineMedium,);
   }
 }
 

@@ -35,17 +35,38 @@ class AuthServices {
     await _auth.signOut();
   }
 
-  static Future<void> delete(String password) async{
+  static Future<User?> reauthenticate(String password) async{
     final user = _auth.currentUser;
-    if (user != null){
+    if(user != null){
       try{
         final credential = EmailAuthProvider.credential(email: user.email!, password: password);
-      await user.reauthenticateWithCredential(credential);
+        final reauthenticatedUser = await user.reauthenticateWithCredential(credential);
+        if(reauthenticatedUser.user != null){
+          return reauthenticatedUser.user!;
+        }else{
+          return null;
+        }
+      }catch(e){
+        // print("Error while reauthentication: $e");
+        return null;
+              }
+    }else{
+      return null;
+    }
+  }
+
+  static Future<bool> delete(String password) async{
+    final user = await reauthenticate(password);
+    if (user != null){
+      try{
       await user.delete();
-      await _auth.signOut();
+      return true;
       }catch(e){
         print("Error while deleting the user: $e");
+        return false;
       }
+    }else{
+      return false;
     }
     
   }
