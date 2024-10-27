@@ -34,4 +34,19 @@ class AuthServices {
   static Future<void> signOut() async{
     await _auth.signOut();
   }
+
+  static Future<void> delete(String password) async{
+    final user = _auth.currentUser;
+    if (user != null){
+      try{
+        final credential = EmailAuthProvider.credential(email: user.email!, password: password);
+      await user.reauthenticateWithCredential(credential);
+      await user.delete();
+      await _auth.signOut();
+      }catch(e){
+        print("Error while deleting the user: $e");
+      }
+    }
+    
+  }
 }
