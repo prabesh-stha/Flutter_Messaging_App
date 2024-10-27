@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:messaging_app/models/chat.dart';
 import 'package:messaging_app/models/user.dart';
 import 'package:messaging_app/providers/message_provider.dart';
 import 'package:messaging_app/providers/user_provider.dart';
