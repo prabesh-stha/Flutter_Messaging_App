@@ -60,7 +60,7 @@ static Future<String?> findChat(List<String> participants) async{
 }
 
 static Future<void> deleteChat(String chatId) async {
-  final messagesCollection = _firestore.collection('chats').doc(chatId).collection('messages');
+  final messagesCollection = _firestore.collection('chats').doc(chatId).collection('message');
 
   try {
     final messagesSnapshot = await messagesCollection.get();

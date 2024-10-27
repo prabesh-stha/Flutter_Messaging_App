@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messaging_app/models/user.dart';
 import 'package:messaging_app/services/auth_services.dart';
+import 'package:messaging_app/services/storage_services.dart';
 import 'package:messaging_app/services/user_services.dart';
 import 'package:messaging_app/shared/theme.dart';
 
@@ -19,6 +23,19 @@ class _SignUpState extends State<SignUp> {
   bool _showPassword = false;
   bool _isLoading = false;
   String? _error;
+  final _picker = ImagePicker();
+  File? image;
+
+  Future<void> _pickImage() async{
+    print("tapped");
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if(pickedFile != null){
+      setState(() {
+        image = File(pickedFile.path);
+      });
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,6 +44,15 @@ class _SignUpState extends State<SignUp> {
         key: _key,
         child: Column(
           children: [
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 100,
+                backgroundImage: image != null ? FileImage(image!) : null,
+                child: image == null ? const Icon(Icons.add_a_photo_outlined, size: 50,) : null,
+              ),
+            ),
+            const SizedBox(height: 16,),
             TextFormField(
               style: TextStyle(
                 color: AppColor.textColor,
@@ -91,7 +117,11 @@ class _SignUpState extends State<SignUp> {
                   _error = "Email already existed";
                 });
               }else{
-                await UserServices.createUser(User(uid: user.uid, name: name, email: user.email));
+                if(image != null){
+                final photoUrl = await StorageServices.uploadAndDownloadUrl(image!, user.uid);
+                await UserServices.createUser(User(uid: user.uid, name: name, email: user.email, photoUrl: photoUrl));
+                }
+                
               }
               setState(() {
                 _isLoading = false;

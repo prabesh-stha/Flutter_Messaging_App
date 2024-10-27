@@ -11,7 +11,8 @@ class UserServices {
    await doc.set({
       'uid' : user.uid,
       'name' : user.name,
-      'email' : user.email
+      'email' : user.email,
+      'photoUrl' : user.photoUrl
     });
   }
 

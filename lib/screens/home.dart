@@ -7,6 +7,7 @@ import 'package:messaging_app/providers/user_provider.dart';
 import 'package:messaging_app/screens/chat_screen.dart';
 import 'package:messaging_app/services/auth_services.dart';
 import 'package:messaging_app/services/chat_service.dart';
+import 'package:messaging_app/shared/capitalize_word.dart';
 import 'package:messaging_app/shared/styled_text.dart';
 
 class Home extends ConsumerStatefulWidget {
@@ -26,7 +27,8 @@ class _HomeState extends ConsumerState<Home> {
         title: user.when(
           data: (userData) {
             if(userData!= null){
-              return Text('${userData.name[0].toUpperCase()}${userData.name.substring(1)}' );
+              // return Text('${userData.name[0].toUpperCase()}${userData.name.substring(1)}' );
+              return CapitalizeWord(text: userData.name, styleOfText: StyleOfText.title,);
             }else{
               return const Text("User");
             }
@@ -75,8 +77,12 @@ class _HomeState extends ConsumerState<Home> {
                   );
                 },
                      child: ListTile(
-                      leading: const Icon(Icons.person_2_outlined),
-                      title: StyledText(text: '${chat.receiverUser.name[0].toUpperCase()}${chat.receiverUser.name.substring(1)}'),
+                      leading: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: chat.receiverUser.photoUrl != null ? NetworkImage(chat.receiverUser.photoUrl!) : null,
+                                child: chat.receiverUser.photoUrl == null ? const Icon(Icons.person, size: 50) : null,
+                              ),
+                      title: CapitalizeWord(text: chat.receiverUser.name, styleOfText: StyleOfText.body),
                       subtitle: StyledText(text: chat.receiverUser.email),
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(senderId: chat.senderUser.uid, participants: [chat.senderUser.uid, chat.receiverUser.uid], receiverUser: chat.receiverUser))),
                     )
@@ -116,10 +122,17 @@ void showAllUserSheet(BuildContext context, WidgetRef ref, User currentUser) {
                   itemBuilder: (context, index) {
                     final user = filteredUsers[index];
                     return ListTile(
-                      leading: const Icon(Icons.person_2_outlined),
-                      title: StyledText(text: user.name),
+                      leading: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: user.photoUrl != null ? NetworkImage(user.photoUrl!) : null,
+                                child: user.photoUrl == null ? const Icon(Icons.person, size: 50) : null,
+                              ),
+                      title: CapitalizeWord(text: user.name, styleOfText: StyleOfText.body),
                       subtitle: StyledText(text: user.email),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(senderId: currentUser.uid, participants: [currentUser.uid, user.uid], receiverUser: user))),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(senderId: currentUser.uid, participants: [currentUser.uid, user.uid], receiverUser: user)));
+                      } 
                     );
                   },
                 );
@@ -134,30 +147,3 @@ void showAllUserSheet(BuildContext context, WidgetRef ref, User currentUser) {
   );
 }
 
-
-class Example extends StatelessWidget {
-  final User user;
-  const Example({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(user.name),
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Name: ${user.name}', style: const TextStyle(fontSize: 24)),
-            const SizedBox(height: 8),
-            Text('Email: ${user.email}', style: const TextStyle(fontSize: 18)),
-            // Add more user details as needed
-          ],
-        ),
-      ),
-    );
-  }
-}
