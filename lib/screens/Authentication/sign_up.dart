@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messaging_app/models/user.dart';
+import 'package:messaging_app/screens/Authentication/error_display.dart';
+import 'package:messaging_app/screens/Authentication/validation.dart';
 import 'package:messaging_app/services/auth_services.dart';
 import 'package:messaging_app/services/storage_services.dart';
 import 'package:messaging_app/services/user_services.dart';
@@ -23,11 +25,47 @@ class _SignUpState extends State<SignUp> {
   bool _showPassword = false;
   bool _isLoading = false;
   String? _error;
+  String? _emailError;
+  String? _passwordError;
+  String? _nameError;
+  String? _imageError;
   final _picker = ImagePicker();
   File? image;
 
+  bool validation(){
+    bool valid = true;
+    if(!Validation.isValidEmail(_emailController.text.trim())){
+      setState(() {
+        valid = false;
+      _emailError = "Please enter valid email";
+      });
+    }
+
+    if(!Validation.isValidPassword(_passwordController.text.trim())){
+      setState(() {
+        valid = false;
+      _passwordError = "Password must be at least 8 characters long and contain uppercase and lowercase letters and a digit.";
+      });
+    }
+
+    if(!Validation.isValidName(_nameController.text.trim())){
+     setState(() {
+        valid = false;
+      _nameError = "Please enter the valid name";
+     });
+    }
+
+    if(image == null){
+      setState(() {
+        valid = false;
+      _imageError = "Please choose an image";
+      });
+    }
+
+    return valid;
+  }
+
   Future<void> _pickImage() async{
-    print("tapped");
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if(pickedFile != null){
       setState(() {
@@ -44,6 +82,8 @@ class _SignUpState extends State<SignUp> {
         key: _key,
         child: Column(
           children: [
+            if(_imageError != null)
+              ErrorDisplay(message: _imageError!),
             GestureDetector(
               onTap: _pickImage,
               child: CircleAvatar(
@@ -53,6 +93,9 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
             const SizedBox(height: 16,),
+
+            if(_nameError != null)
+              ErrorDisplay(message: _nameError!),
             TextFormField(
               style: TextStyle(
                 color: AppColor.textColor,
@@ -66,10 +109,13 @@ class _SignUpState extends State<SignUp> {
 
             const SizedBox(height: 16,),
 
+            if(_emailError != null)
+              ErrorDisplay(message: _emailError!),
             TextFormField(
               style: TextStyle(
                 color: AppColor.textColor
               ),
+              keyboardType: TextInputType.emailAddress,
               controller: _emailController,
               decoration: const InputDecoration(
                 labelText: "Email",
@@ -79,6 +125,9 @@ class _SignUpState extends State<SignUp> {
 
             const SizedBox(height: 16,),
 
+
+            if(_passwordError != null)
+              ErrorDisplay(message: _passwordError!),
             TextFormField(
               controller: _passwordController,
               obscureText: !_showPassword,
@@ -104,6 +153,13 @@ class _SignUpState extends State<SignUp> {
             _isLoading ? const CircularProgressIndicator() :
             ElevatedButton(onPressed: ()async{
               setState(() {
+                _emailError = null;
+                _passwordError = null;
+                _nameError = null;
+                _imageError = null;
+              });
+              if(validation()){
+              setState(() {
                 _isLoading = true;
               });
               final name = _nameController.text.toLowerCase().trim();
@@ -126,6 +182,7 @@ class _SignUpState extends State<SignUp> {
               setState(() {
                 _isLoading = false;
               });
+              }
             }, child: const Text("Sign up"))
           ],
         )),

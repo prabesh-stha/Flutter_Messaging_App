@@ -47,7 +47,6 @@ class AuthServices {
           return null;
         }
       }catch(e){
-        // print("Error while reauthentication: $e");
         return null;
               }
     }else{
@@ -62,7 +61,6 @@ class AuthServices {
       await user.delete();
       return true;
       }catch(e){
-        print("Error while deleting the user: $e");
         return false;
       }
     }else{

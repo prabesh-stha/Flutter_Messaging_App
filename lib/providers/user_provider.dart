@@ -8,7 +8,12 @@ final userProvider = StreamProvider.autoDispose<User?>((ref){
 
   if(user != null){
     return FirebaseFirestore.instance.collection("users").doc(user.uid).snapshots().map((doc){
-      return User.fromFirestore(doc);
+      if(doc.exists){
+        return User.fromFirestore(doc);
+      }
+      else{
+        return null;
+      }
     });
   }else{
     return Stream.value(null);

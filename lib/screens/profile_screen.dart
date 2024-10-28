@@ -1,12 +1,8 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messaging_app/models/user.dart';
 import 'package:messaging_app/screens/delete_user_sheet.dart';
-import 'package:messaging_app/services/auth_services.dart';
-import 'package:messaging_app/services/storage_services.dart';
 import 'package:messaging_app/services/user_services.dart';
 import 'package:messaging_app/shared/capitalize_word.dart';
 import 'package:messaging_app/shared/styled_text.dart';
@@ -200,9 +196,6 @@ void showDeleteUser(BuildContext context, User user) {
       builder: (BuildContext context) {
         return DeleteUserSheet(
             user: user,
-            // onDeleteSuccess: (success) {
-            //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: success ? const StyledText(text: "Success") : const StyledText(text: "Failed"), backgroundColor: success ? Colors.green : Colors.red,));
-            // }
             );
       },
     );

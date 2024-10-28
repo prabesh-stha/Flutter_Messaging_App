@@ -5,7 +5,6 @@ import 'package:messaging_app/shared/styled_text.dart';
 
 class DeleteUserSheet extends StatefulWidget {
   final User user;
-  // final Function(bool) onDeleteSuccess;
   const DeleteUserSheet({super.key, required this.user});
 
   @override
@@ -15,6 +14,7 @@ class DeleteUserSheet extends StatefulWidget {
 class _DeleteUserSheetState extends State<DeleteUserSheet> {
   final passwordController = TextEditingController();
   bool showPassword = false;
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,14 +41,19 @@ class _DeleteUserSheetState extends State<DeleteUserSheet> {
               ),
             ),
             const SizedBox(height: 16),
+            _isLoading ? const CircularProgressIndicator() :
             ElevatedButton(
               onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
                 final password = passwordController.text.trim();
                 final bool result = await UserServices.deleteUser(widget.user.uid, password);
-
-                // widget.onDeleteSuccess(result);
+                setState(() {
+                  _isLoading = false;
+                });
                 if(context.mounted){
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: result ? const StyledText(text: "Success") : const StyledText(text: "Failed"), backgroundColor: result ? Colors.green : Colors.red,));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: result ? const StyledText(text: "Success") : const StyledText(text: "Failed"), backgroundColor: result ? Colors.green : Colors.red, duration: const Duration(seconds: 2), showCloseIcon: true,));
                   Navigator.pop(context);
                 }
               },
@@ -56,6 +61,6 @@ class _DeleteUserSheetState extends State<DeleteUserSheet> {
             ),
           ],
         ),
-      );;
+      );
   }
 }

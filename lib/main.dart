@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messaging_app/models/app_user.dart';
 import 'package:messaging_app/providers/auth_provider.dart';
-import 'package:messaging_app/screens/home.dart';
 import 'package:messaging_app/screens/tab_screen.dart';
 import 'package:messaging_app/screens/welcome.dart';
 import 'package:messaging_app/shared/theme.dart';

@@ -15,7 +15,7 @@ class TabScreen extends ConsumerWidget {
     return DefaultTabController(length: 2, child: Scaffold(
       body: user.when(data: (currentUser){
         if(currentUser == null){
-          return const Center(child: StyledText(text: "User not found🥺"),);
+          return const Center(child: CircularProgressIndicator());
         }
         else{
           return  TabBarView(children: [
